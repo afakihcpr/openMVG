@@ -59,7 +59,7 @@ struct ImageCollectionGeometricFilter
 
   // Data
   const sfm::SfM_Data * sfm_data_;
-  const std::shared_ptr<sfm::Regions_Provider> & regions_provider_;
+  const std::shared_ptr<sfm::Regions_Provider> regions_provider_;
   PairWiseMatches _map_GeometricMatches;
 };
 

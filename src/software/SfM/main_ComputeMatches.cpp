@@ -428,7 +428,7 @@ int main(int argc, char **argv)
         map_GeometricMatches = filter_ptr->Get_geometric_matches();
 
         //-- Perform an additional check to remove pairs with poor overlap
-        std::vector<PairWiseMatches::key_type> vec_toRemove;
+       /* std::vector<PairWiseMatches::key_type> vec_toRemove;
         for (const auto & pairwisematches_it : map_GeometricMatches)
         {
           const size_t putativePhotometricCount = map_PutativesMatches.find(pairwisematches_it.first)->second.size();
@@ -443,7 +443,7 @@ int main(int argc, char **argv)
         for (const auto & pair_to_remove_it : vec_toRemove)
         {
           map_GeometricMatches.erase(pair_to_remove_it);
-        }
+        }*/
       }
       break;
     }

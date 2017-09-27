@@ -3,6 +3,7 @@ add_executable(openMVG_main_geodesy_registration_to_gps_position registration_to
 target_link_libraries(openMVG_main_geodesy_registration_to_gps_position
   openMVG_system
   openMVG_features
+  openMVG_geometry
   openMVG_sfm
   easyexif
   stlplus)

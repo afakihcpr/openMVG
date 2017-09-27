@@ -1,5 +1,5 @@
 
-UNIT_TEST(openMVG mser "openMVG_image;openMVG_features")
+UNIT_TEST(openMVG mser "openMVG_image;openMVG_features;stlplus")
 if (OpenMVG_BUILD_TESTS)
   target_compile_definitions(openMVG_test_mser
       PRIVATE -DTHIS_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../../image/")

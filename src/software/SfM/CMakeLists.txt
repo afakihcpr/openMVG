@@ -7,6 +7,7 @@ TARGET_LINK_LIBRARIES(openMVG_main_SfMInit_ImageListing
   openMVG_system
   openMVG_image
   openMVG_features
+  openMVG_multiview
   openMVG_sfm
   easyexif
   )
@@ -16,6 +17,7 @@ ADD_EXECUTABLE(openMVG_main_ConvertList main_ConvertList.cpp)
 TARGET_LINK_LIBRARIES(openMVG_main_ConvertList
   openMVG_system
   openMVG_features
+  openMVG_multiview
   openMVG_sfm
   )
 
@@ -85,6 +87,7 @@ TARGET_LINK_LIBRARIES(openMVG_main_IncrementalSfM
   openMVG_system
   openMVG_image
   openMVG_features
+  openMVG_matching
   openMVG_sfm
   stlplus
   )
@@ -94,6 +97,7 @@ TARGET_LINK_LIBRARIES(openMVG_main_GlobalSfM
   openMVG_system
   openMVG_image
   openMVG_features
+  openMVG_matching
   openMVG_sfm
   stlplus
   )
@@ -119,6 +123,7 @@ TARGET_LINK_LIBRARIES(openMVG_main_ComputeStructureFromKnownPoses
   openMVG_system
   openMVG_features
   openMVG_sfm
+  openMVG_matching
   stlplus
   )
 
@@ -164,6 +169,7 @@ ADD_EXECUTABLE(openMVG_main_exportKeypoints main_exportKeypoints.cpp)
 TARGET_LINK_LIBRARIES(openMVG_main_exportKeypoints
   openMVG_system
   openMVG_features
+  openMVG_matching
   openMVG_sfm
   stlplus
   )
@@ -175,6 +181,7 @@ ADD_EXECUTABLE(openMVG_main_exportMatches main_exportMatches.cpp)
 TARGET_LINK_LIBRARIES(openMVG_main_exportMatches
   openMVG_system
   openMVG_features
+  openMVG_matching
   openMVG_sfm
   stlplus
   )
@@ -185,6 +192,7 @@ ADD_EXECUTABLE(openMVG_main_exportTracks main_exportTracks.cpp)
 TARGET_LINK_LIBRARIES(openMVG_main_exportTracks
   openMVG_system
   openMVG_features
+  openMVG_matching
   openMVG_sfm
   stlplus
   )
@@ -226,6 +234,7 @@ TARGET_LINK_LIBRARIES(openMVG_main_openMVG2PMVS
   openMVG_system
   openMVG_image
   openMVG_features
+  openMVG_multiview
   openMVG_sfm
   stlplus
   )
@@ -271,6 +280,7 @@ TARGET_LINK_LIBRARIES(openMVG_main_openMVG2MESHLAB
   openMVG_system
   openMVG_image
   openMVG_features
+  openMVG_multiview
   openMVG_sfm
   stlplus
   )
@@ -356,6 +366,9 @@ ADD_EXECUTABLE(openMVG_main_evalQuality main_evalQuality.cpp)
 TARGET_LINK_LIBRARIES(openMVG_main_evalQuality
   openMVG_system
   openMVG_features
+  openMVG_geometry
+  openMVG_multiview
+  openMVG_numeric
   openMVG_sfm
   stlplus
   )

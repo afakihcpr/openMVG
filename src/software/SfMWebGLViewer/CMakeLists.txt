@@ -8,6 +8,7 @@ target_link_libraries(openMVG_main_openMVG2WebGL
   openMVG_features
   openMVG_image
   openMVG_sfm
+  openMVG_geometry
   stlplus
   )
 

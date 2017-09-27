@@ -21,7 +21,7 @@ list(REMOVE_ITEM multiview_files_cpp ${MULTIVIEWTESTDATA})
 add_library(openMVG_multiview
   ${multiview_files_header}
   ${multiview_files_cpp})
-set_property(TARGET openMVG_multiview PROPERTY FOLDER OpenMVG)
+#set_property(TARGET openMVG_multiview PROPERTY FOLDER OpenMVG)
 install(TARGETS openMVG_multiview DESTINATION lib EXPORT openMVG-targets)
 target_link_libraries(
   openMVG_multiview
@@ -45,12 +45,12 @@ UNIT_TEST(openMVG triangulation_nview "openMVG_multiview_test_data;openMVG_multi
 # Solvers
 UNIT_TEST(openMVG solver_affine "openMVG_multiview")
 UNIT_TEST(openMVG solver_fundamental_kernel "openMVG_multiview")
-UNIT_TEST(openMVG solver_essential_kernel "openMVG_multiview_test_data;openMVG_multiview")
+UNIT_TEST(openMVG solver_essential_kernel "openMVG_multiview_test_data;openMVG_multiview;openMVG_numeric")
 UNIT_TEST(openMVG solver_homography_kernel "openMVG_multiview_test_data;openMVG_multiview")
-UNIT_TEST(openMVG solver_essential_five_point "openMVG_multiview_test_data;openMVG_multiview")
+UNIT_TEST(openMVG solver_essential_five_point "openMVG_multiview_test_data;openMVG_multiview;openMVG_numeric")
 UNIT_TEST(openMVG solver_resection_kernel "openMVG_multiview_test_data;openMVG_multiview")
 UNIT_TEST(openMVG solver_translation_knownRotation_kernel "openMVG_multiview_test_data;openMVG_multiview")
 
 # Averaging routines
-UNIT_TEST(openMVG rotation_averaging "openMVG_multiview_test_data;openMVG_multiview")
-UNIT_TEST(openMVG translation_averaging "openMVG_multiview_test_data;openMVG_multiview;lemon")
+UNIT_TEST(openMVG rotation_averaging "openMVG_multiview_test_data;openMVG_multiview;openMVG_numeric")
+UNIT_TEST(openMVG translation_averaging "openMVG_multiview_test_data;openMVG_multiview;openMVG_numeric;lemon")

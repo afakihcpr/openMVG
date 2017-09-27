@@ -7,6 +7,8 @@ target_link_libraries(openMVG_main_ColHarmonize
   openMVG_image
   openMVG_kvld
   openMVG_lInftyComputerVision
+  openMVG_matching
+  openMVG_linearProgramming
   openMVG_sfm
   openMVG_system
   stlplus
