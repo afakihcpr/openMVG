@@ -11,6 +11,9 @@
 
 #include "openMVG/numeric/eigen_alias_definition.hpp"
 #include "openMVG/sfm/sfm_data_BA.hpp"
+#include "openMVG/types.hpp"
+#include "openMVG/geometry/Similarity3.hpp"
+#include "ceres/problem.h"
 
 namespace ceres { class CostFunction; }
 namespace openMVG { namespace cameras { struct IntrinsicBase; } }
@@ -46,6 +49,13 @@ class Bundle_Adjustment_Ceres : public Bundle_Adjustment
   };
   private:
     BA_Ceres_options ceres_options_;
+    // Data wrapper for refinement:
+    Hash_Map<IndexT, std::vector<double>> map_intrinsics;
+    Hash_Map<IndexT, std::vector<double>> map_poses;
+    std::shared_ptr<ceres::Problem> problem_;
+    bool b_usable_prior;
+    openMVG::geometry::Similarity3 sim_to_center;
+    double pose_center_robust_fitting_error;
 
   public:
   explicit Bundle_Adjustment_Ceres
@@ -55,6 +65,18 @@ class Bundle_Adjustment_Ceres : public Bundle_Adjustment
   );
 
   BA_Ceres_options & ceres_options();
+
+  void setCeresProblem(sfm::SfM_Data& sfm_data, const Optimize_Options& options);
+
+  std::shared_ptr<ceres::Problem> getCeresProblem()
+  {
+    return problem_;
+  }
+
+  Hash_Map<IndexT, std::vector<double>>& mapPoses()
+  {
+    return map_poses;
+  }
 
   bool Adjust
   (
