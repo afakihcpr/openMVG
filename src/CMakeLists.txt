@@ -262,6 +262,7 @@ if (NOT Ceres_FOUND)
     FILE(READ "${CMAKE_CURRENT_SOURCE_DIR}/third_party/ceres-solver/VERSION" CERES_CONFIG)
     STRING(REGEX REPLACE "version ([0-9.]+).*" "\\1" CERES_VERSION ${CERES_CONFIG})
   set(CERES_LIBRARIES ceres cxsparse)
+  include_directories(${CERES_INCLUDE_DIRS})
 endif()
 
 # ==============================================================================
