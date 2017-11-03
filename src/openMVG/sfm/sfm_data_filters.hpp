@@ -60,8 +60,7 @@ IndexT RemoveOutliers_AngleError
 );
 
 /// Erase pose with insufficient track observations
-bool eraseMissingPoses
-(
+std::vector<IndexT> eraseMissingPoses(
   SfM_Data & sfm_data,
   const IndexT min_points_per_pose = 6
 );
@@ -74,8 +73,7 @@ bool eraseObservationsWithMissingPoses
 );
 
 /// Remove unstable content from analysis of the sfm_data structure
-bool eraseUnstablePosesAndObservations
-(
+std::vector<IndexT> eraseUnstablePosesAndObservations(
   SfM_Data & sfm_data,
   const IndexT min_points_per_pose = 6,
   const IndexT min_points_per_landmark = 2

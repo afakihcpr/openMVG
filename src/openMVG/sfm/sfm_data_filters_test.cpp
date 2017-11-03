@@ -101,12 +101,12 @@ TEST(SFM_DATA_FILTERS, eraseMissingPoses)
     sfm_data.structure[i].X = Vec3::Random();
   }
   // Since all poses are seen at least one time, there is no need to remove poses
-  EXPECT_FALSE(eraseMissingPoses(sfm_data, 1));
+  EXPECT_TRUE(eraseMissingPoses(sfm_data, 1).empty());
 
   // Erase one observation
   sfm_data.structure.erase(5);
   // Since there is no observation for the view 5, pose 5 must be deleted
-  EXPECT_TRUE(eraseMissingPoses(sfm_data, 1));
+  EXPECT_FALSE(eraseMissingPoses(sfm_data, 1).empty());
 }
 
 TEST(SFM_DATA_FILTERS, eraseObservationsWithMissingPoses)
@@ -150,14 +150,14 @@ TEST(SFM_DATA_FILTERS, eraseUnstablePosesAndObservations)
     sfm_data.structure[i].X = Vec3::Random();
   }
   // Since all poses are seen at least one time, there is no need to remove poses
-  EXPECT_FALSE(eraseUnstablePosesAndObservations(sfm_data, 1, 1));
+  EXPECT_TRUE(eraseUnstablePosesAndObservations(sfm_data, 1, 1).empty());
 
   // Erase one pose & one observation
   sfm_data.poses.erase(5);
   sfm_data.structure.erase(4);
 
   // Pose id 4 & obversation id 5 must be removed
-  EXPECT_FALSE(eraseUnstablePosesAndObservations(sfm_data, 1, 1));
+  EXPECT_TRUE(eraseUnstablePosesAndObservations(sfm_data, 1, 1).empty());
   EXPECT_EQ(4, sfm_data.poses.size());
   EXPECT_EQ(4, sfm_data.structure.size());
   EXPECT_EQ(0, sfm_data.poses.count(4));

@@ -327,7 +327,7 @@ int main(int argc, char **argv)
     // Check that poses & intrinsic cover some measures (after outlier removal)
     const IndexT minPointPerPose = 12; // 6 min
     const IndexT minTrackLength = 3; // 2 min
-    if (eraseUnstablePosesAndObservations(sfm_data, minPointPerPose, minTrackLength))
+    if (!eraseUnstablePosesAndObservations(sfm_data, minPointPerPose, minTrackLength).empty())
     {
       KeepLargestViewCCTracks(sfm_data);
       eraseUnstablePosesAndObservations(sfm_data, minPointPerPose, minTrackLength);

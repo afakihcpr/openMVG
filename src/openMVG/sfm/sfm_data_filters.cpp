@@ -118,13 +118,13 @@ IndexT RemoveOutliers_AngleError
   return removedTrack_count;
 }
 
-bool eraseMissingPoses
+std::vector<IndexT> eraseMissingPoses
 (
   SfM_Data & sfm_data,
   const IndexT min_points_per_pose
 )
 {
-  IndexT removed_elements = 0;
+  std::vector<IndexT> removed_elements;
   const Landmarks & landmarks = sfm_data.structure;
 
   // Count the observation poses occurrence
@@ -158,11 +158,11 @@ bool eraseMissingPoses
   {
     if (it->second < min_points_per_pose)
     {
+      removed_elements.push_back(it->first);
       sfm_data.poses.erase(it->first);
-      ++removed_elements;
     }
   }
-  return removed_elements > 0;
+  return removed_elements;
 }
 
 bool eraseObservationsWithMissingPoses
@@ -205,7 +205,7 @@ bool eraseObservationsWithMissingPoses
 }
 
 /// Remove unstable content from analysis of the sfm_data structure
-bool eraseUnstablePosesAndObservations
+std::vector<IndexT> eraseUnstablePosesAndObservations
 (
   SfM_Data & sfm_data,
   const IndexT min_points_per_pose,
@@ -216,12 +216,15 @@ bool eraseUnstablePosesAndObservations
   eraseObservationsWithMissingPoses(sfm_data, min_points_per_landmark);
   // Then iteratively remove orphan poses & observations
   IndexT remove_iteration = 0;
+  std::vector<IndexT> removed_poses;
   bool bRemovedContent = false;
   do
   {
     bRemovedContent = false;
-    if (eraseMissingPoses(sfm_data, min_points_per_pose))
+    const auto erased_poses = eraseMissingPoses(sfm_data, min_points_per_pose);
+    if (!erased_poses.empty())
     {
+      removed_poses.insert(removed_poses.end(), erased_poses.cbegin(), erased_poses.cend());
       bRemovedContent = eraseObservationsWithMissingPoses(sfm_data, min_points_per_landmark);
       // Erase some observations can make some Poses index disappear so perform the process in a loop
     }
@@ -229,7 +232,7 @@ bool eraseUnstablePosesAndObservations
   }
   while (bRemovedContent);
 
-  return remove_iteration > 0;
+  return removed_poses;
 }
 
 /// Tell if the sfm_data structure is one CC or not
