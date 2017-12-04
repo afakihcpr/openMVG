@@ -23,6 +23,19 @@ AKAZE_Image_describer_SURF::Describe_AKAZE_SURF
   std::vector<AKAZEKeypoint> kpts;
   kpts.reserve(5000);
   akaze.Feature_Detection(kpts);
+
+  const auto higher_response = [](const AKAZEKeypoint& rhs, const AKAZEKeypoint& lhs)
+  {
+    return rhs.response > lhs.response;
+  };
+
+  std::sort(kpts.begin(), kpts.end(), higher_response);
+
+  if (kpts.size() > 20000)
+  {
+    kpts.resize(20000);
+  }
+
   akaze.Do_Subpixel_Refinement(kpts);
 
   // Feature masking (remove keypoints if they are masked)

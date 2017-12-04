@@ -323,10 +323,34 @@ void AKAZE::Feature_Detection(std::vector<AKAZEKeypoint>& kpts) const
     }
   }
 
+  using AKAZEKeypointP = std::pair<AKAZEKeypoint, bool>;
+  const auto higher_response = [](const AKAZEKeypointP& rhs, const AKAZEKeypointP& lhs)
+  {
+    return rhs.first.response > lhs.first.response;
+  };
+
+  const auto scale = 0.9;
+  auto max_num = 10000;
+
+
+
   //-- Filter duplicates
+  std::cout << "Scale "<< 0 << " : " << vec_kpts_perSlice[0].size() << " points" << std::endl;
+  std::sort(vec_kpts_perSlice[0].begin(), vec_kpts_perSlice[0].end(), higher_response);
+  if (vec_kpts_perSlice[0].size() > max_num)
+  {
+    vec_kpts_perSlice[0].resize(max_num);
+  }
   detectDuplicates(vec_kpts_perSlice[0], vec_kpts_perSlice[0]);
   for (size_t k = 1; k < vec_kpts_perSlice.size(); ++k)
   {
+    std::cout << "Scale "<< k << " : " << vec_kpts_perSlice[k].size() << " points" << std::endl;
+    max_num *= scale;
+    std::sort(vec_kpts_perSlice[k].begin(), vec_kpts_perSlice[k].end(), higher_response);
+    if (vec_kpts_perSlice[k].size() > max_num)
+    {
+      vec_kpts_perSlice[k].resize(max_num);
+    }
     detectDuplicates(vec_kpts_perSlice[k], vec_kpts_perSlice[k]);    // detect inter scale duplicates
     detectDuplicates(vec_kpts_perSlice[k-1], vec_kpts_perSlice[k]);  // detect duplicates using previous octave
   }
@@ -339,6 +363,7 @@ void AKAZE::Feature_Detection(std::vector<AKAZEKeypoint>& kpts) const
       if (!vec_kp[i].second)
         kpts.emplace_back(vec_kp[i].first);
   }
+  std::cout << "After duplicate removal " << kpts.size() << " points " << std::endl;
 }
 
 /// This method performs sub pixel refinement of a keypoint
