@@ -330,7 +330,7 @@ void AKAZE::Feature_Detection(std::vector<AKAZEKeypoint>& kpts) const
   };
 
   const auto scale = 0.9;
-  auto max_num = 10000;
+  auto max_num = 6000;
 
 
 
