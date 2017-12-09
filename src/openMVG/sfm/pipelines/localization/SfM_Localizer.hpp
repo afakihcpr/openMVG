@@ -27,6 +27,7 @@ namespace sfm {
 
 struct Image_Localizer_Match_Data
 {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Mat34 projection_matrix;
   Mat pt3D;
   Mat pt2D;

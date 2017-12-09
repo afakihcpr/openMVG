@@ -287,13 +287,17 @@ public:
     assert(2 == x1_.rows());
     assert(x1_.rows() == x2_.rows());
     assert(x1_.cols() == x2_.cols());
+    //std::cout << "After Assert" << std::endl;
+    //std::cout<<x1_ << std::endl;
     Mat x1_h = x1_.colwise().homogeneous();
+    //std::cout<<"Passed homogenous" <<std::endl;
     Mat x1_c = K1_.inverse() * x1_h;
+    //std::cout << "Passed inversion" << std::endl;
     x1k_ = x1_c.colwise().hnormalized();
-
-    Mat x2_h = x2_.colwise().homogeneous();
-    Mat x2_c = K2_.inverse() * x2_h;
-    x2k_ = x2_c.colwise().hnormalized();
+    //x1k_ = (K1_.inverse() * x1_.colwise().homogeneous()).colwise().hnormalized();
+    //std::cout <<"Got x1" << std::endl;
+    x2k_ = (K2_.inverse() * x2_.colwise().homogeneous()).colwise().hnormalized();
+    //std::cout <<"Got x2" << std::endl;
     //Point to line probability (line is the epipolar line)
     const double D = std::hypot(w2, h2); // diameter
     const double A = w2*(double)h2; // area
