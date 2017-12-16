@@ -16,6 +16,7 @@
 #include <cmath>
 #include <complex>
 #include <tuple>
+#include <iostream>
 
 using namespace openMVG;
 
@@ -140,6 +141,20 @@ bool computePoses
   return !rotation_translation_solutions.empty();
 }
 
+Eigen::Matrix3d closestRotationMatrix(const Eigen::Matrix3d& rotation)
+{
+    Eigen::JacobiSVD<Eigen::Matrix3d> svd(rotation, Eigen::ComputeFullU|Eigen::ComputeFullV);
+    const auto d = rotation.determinant();
+    if (d < 0)
+    {
+      Eigen::Matrix3d S = Eigen::Matrix3d::Zero();
+      S.diagonal() << 1.0, 1.0, -1.0;
+      return svd.matrixU() * S * (svd.matrixV().transpose());
+    }
+
+    return svd.matrixU() * (svd.matrixV().transpose());
+}
+
 void P3PSolver_Ke::Solve
 (
   const Mat & bearing_vectors,
@@ -150,14 +165,28 @@ void P3PSolver_Ke::Solve
   std::vector<std::tuple<Mat3, Vec3>> rotation_translation_solutions;
   if (computePoses(bearing_vectors, X, rotation_translation_solutions))
   {
+    double min_d = std::numeric_limits<double>::max(), max_d = 0, average = 0;
+    int n = 0;
     for (const auto & rot_trans_it : rotation_translation_solutions) {
       Mat34 P;
-      P_From_KRt( Mat3::Identity(),          // intrinsics
-                  std::get<0>(rot_trans_it), // rotation
-                  std::get<1>(rot_trans_it), // translation
-                  &P);
-      models->push_back(P);
+      Mat3 rot0 = std::get<0>(rot_trans_it);
+      Mat3 rot1 = closestRotationMatrix(rot0);
+      double dist = (rot0 - rot1).norm();
+      if (min_d > dist) min_d = dist;
+      if (max_d < dist) max_d = dist;
+
+      average = (dist + n++ * average);
+      average /= n;
+      if (dist < 0.25)
+      {
+        P_From_KRt( Mat3::Identity(),          // intrinsics
+                    rot1, // rotation
+                    std::get<1>(rot_trans_it), // translation
+                    &P);
+        models->push_back(P);
+      }
     }
+    std::cout << min_d << " " << max_d <<" " << average << std::endl;
   }
 }
 

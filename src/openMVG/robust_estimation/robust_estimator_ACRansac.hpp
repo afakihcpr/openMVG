@@ -195,6 +195,7 @@ NFA_Interface<Kernel>::ComputeNFA_and_inliers
     std::pair<double,double> & nfa_threshold
 )
 {
+  std::cout << "NFA Threshold " << nfa_threshold.first << " " << nfa_threshold.second << std::endl;
   // A-Contrario computation of the most meaningful discrimination inliers/outliers.
   // Two computation mode are implemented:
   // - A quantified computation
@@ -436,6 +437,12 @@ std::pair<double, double> ACRANSAC
             std::copy(vec_sample.begin(), vec_sample.end(),
               std::ostream_iterator<uint32_t>(std::cout, ","));
             std::cout << ")" << std::endl;
+            std::cout<<"Errors ";
+            for (auto i_err : vec_inliers)
+            {
+              std::cout << kernel.unormalizeError(nfa_interface.residuals()[i_err]) << " ";
+            }
+            std::cout << std::endl;
           }
         }
       }
