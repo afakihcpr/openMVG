@@ -51,6 +51,7 @@ TARGET_LINK_LIBRARIES(openMVG_main_ListMatchingPairs
   openMVG_multiview
   openMVG_sfm
   stlplus
+  -lpthread -lm
   )
 
 ADD_EXECUTABLE(openMVG_main_ComputeMatches main_ComputeMatches.cpp)

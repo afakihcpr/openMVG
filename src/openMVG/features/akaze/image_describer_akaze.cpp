@@ -5,6 +5,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "image_describer_akaze.hpp"
+#include <chrono>
+
 
 namespace openMVG {
 namespace features {
@@ -86,11 +88,26 @@ AKAZE_Image_describer_LIOP::Describe_AKAZE_LIOP
   params_.options_.fDesc_factor = GetfDescFactor();
 
   AKAZE akaze(image, params_.options_);
+
+  auto start = std::chrono::high_resolution_clock::now();
   akaze.Compute_AKAZEScaleSpace();
+  std::cout << "Computing scale space took "<<
+               std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() -  start).count()
+            << std::endl;
   std::vector<AKAZEKeypoint> kpts;
   kpts.reserve(5000);
+
+  start = std::chrono::high_resolution_clock::now();
   akaze.Feature_Detection(kpts);
+  std::cout << "Detection took "<<
+               std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() -  start).count()
+            << std::endl;
+
+  start = std::chrono::high_resolution_clock::now();
   akaze.Do_Subpixel_Refinement(kpts);
+  std::cout << "Refinement took "<<
+               std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() -  start).count()
+            << std::endl;
 
   // Feature masking (remove keypoints if they are masked)
   kpts.erase(std::remove_if(kpts.begin(),
@@ -107,6 +124,7 @@ AKAZE_Image_describer_LIOP::Describe_AKAZE_LIOP
   regions->Features().resize(kpts.size());
   regions->Descriptors().resize(kpts.size());
 
+  start = std::chrono::high_resolution_clock::now();
   // Init LIOP extractor
   LIOP::Liop_Descriptor_Extractor liop_extractor;
 
@@ -138,6 +156,9 @@ AKAZE_Image_describer_LIOP::Describe_AKAZE_LIOP
       regions->Descriptors()[i][j] =
         static_cast<unsigned char>(desc[j]*255.f+.5f);
   }
+  std::cout << "Liop took "<<
+               std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() -  start).count()
+            << std::endl;
   return regions;
 }
 

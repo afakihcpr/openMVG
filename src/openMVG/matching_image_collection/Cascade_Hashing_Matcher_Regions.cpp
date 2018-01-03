@@ -16,6 +16,7 @@
 #include "openMVG/types.hpp"
 
 #include "third_party/progress/progress.hpp"
+#include <chrono>
 
 namespace openMVG {
 namespace matching_image_collection {
@@ -107,6 +108,7 @@ void Match
 #endif
   for (int i =0; i < used_index.size(); ++i)
   {
+    std::cout<<"Done "<< i <<" of "<<used_index.size()<<std::endl;
     std::set<IndexT>::const_iterator iter = used_index.begin();
     std::advance(iter, i);
     const IndexT I = *iter;
@@ -172,12 +174,16 @@ void Match
       pvec_distances.reserve(regionsJ->RegionCount() * 2);
       pvec_indices.reserve(regionsJ->RegionCount() * 2);
 
+      auto start = std::chrono::high_resolution_clock::now();
+
       // Match the query descriptors to the database
       cascade_hasher.Match_HashedDescriptions<BaseMat, ResultType>(
         hashed_base_[J], mat_J,
         hashed_base_[I], mat_I,
         &pvec_indices, &pvec_distances);
-
+     // std::cout << "Cascade Matching Took " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() -  start).count()
+      //          << std::endl;
+      start = std::chrono::high_resolution_clock::now();
       std::vector<int> vec_nn_ratio_idx;
       // Filter the matches using a distance ratio test:
       //   The probability that a match is correct is determined by taking
@@ -190,6 +196,10 @@ void Match
         vec_nn_ratio_idx, // output (indices that respect the distance Ratio)
         Square(fDistRatio));
 
+      //std::cout << "Distance Ratio Took " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() -  start).count()
+       //         << std::endl;
+
+       start = std::chrono::high_resolution_clock::now();
       matching::IndMatches vec_putative_matches;
       vec_putative_matches.reserve(vec_nn_ratio_idx.size());
       for (size_t k=0; k < vec_nn_ratio_idx.size(); ++k)
@@ -206,6 +216,8 @@ void Match
       matching::IndMatchDecorator<float> matchDeduplicator(vec_putative_matches,
         pointFeaturesI, pointFeaturesJ);
       matchDeduplicator.getDeduplicated(vec_putative_matches);
+      //std::cout << "Filtering Took " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() -  start).count()
+      //          << std::endl;
 
 #ifdef OPENMVG_USE_OPENMP
 #pragma omp critical
