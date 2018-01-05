@@ -81,6 +81,24 @@ inline bool Generate_SfM_Report
   // Track length statistics
   if (!track_length_occurences.empty() && !sfm_data.GetLandmarks().empty())
   {
+
+      htmlDocStream.pushInfo(sTableBegin);
+      os.str("");
+      os
+        << sRowBegin
+        << sColBegin + "Length" + sColEnd
+        << sColBegin + "Occurences" + sColEnd
+        << sRowEnd;
+      for (const auto occurence : track_length_occurences)
+      {
+          os << sRowBegin
+          << sColBegin << occurence.first << sColEnd
+          << sColBegin << occurence.second << sColEnd
+          << sRowEnd;
+      }
+      os << sTableEnd;
+      htmlDocStream.pushInfo( os.str() );
+
     const IndexT min_track_length = track_length_occurences.cbegin()->first;
     const IndexT max_track_length = track_length_occurences.crbegin()->first;
     // Compute the mean track length
@@ -92,6 +110,9 @@ inline bool Generate_SfM_Report
     const IndexT mean_track_length = sum / static_cast<double>(sfm_data.GetLandmarks().size());
 
     htmlDocStream.pushInfo( "Track length statistics:" );
+
+
+
     htmlDocStream.pushInfo(sTableBegin);
     os.str("");
     os
@@ -130,14 +151,15 @@ inline bool Generate_SfM_Report
     const View * v = iterV.second.get();
     const IndexT id_view = v->id_view;
 
-    os.str("");
-    os << sRowBegin
-      << sColBegin << id_view << sColEnd
-      << sColBegin + stlplus::basename_part(v->s_Img_path) + sColEnd;
+
 
     // IdView | basename | #Observations | residuals min | residual median | residual max
     if (sfm_data.IsPoseAndIntrinsicDefined(v))
     {
+        os.str("");
+        os << sRowBegin
+          << sColBegin << id_view << sColEnd
+          << sColBegin + stlplus::basename_part(v->s_Img_path) + sColEnd;
       if (residuals_per_view.find(id_view) != residuals_per_view.end())
       {
         const std::vector<double> & residuals = residuals_per_view.at(id_view);
@@ -152,9 +174,10 @@ inline bool Generate_SfM_Report
             << sColBegin << max <<sColEnd;
         }
       }
+      os << sRowEnd;
+      htmlDocStream.pushInfo( os.str() );
     }
-    os << sRowEnd;
-    htmlDocStream.pushInfo( os.str() );
+
   }
   htmlDocStream.pushInfo( sTableEnd );
   htmlDocStream.pushInfo( sFullLine );
