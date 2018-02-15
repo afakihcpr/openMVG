@@ -113,7 +113,8 @@ Bundle_Adjustment_Ceres::BA_Ceres_options::BA_Ceres_options
 : bVerbose_(bVerbose),
   nb_threads_(1),
   parameter_tolerance_(1e-8), //~= numeric_limits<float>::epsilon()
-  bUse_loss_function_(true)
+  bUse_loss_function_(true),
+  p_LossFunction_(nullptr)
 {
   #ifdef OPENMVG_USE_OPENMP
     nb_threads_ = omp_get_max_threads();
@@ -318,10 +319,13 @@ void Bundle_Adjustment_Ceres::setCeresProblem(sfm::SfM_Data& sfm_data, const Opt
 
     // Set a LossFunction to be less penalized by false measurements
     //  - set it to nullptr if you don't want use a lossFunction.
-    ceres::LossFunction * p_LossFunction =
-      ceres_options_.bUse_loss_function_ ?
-        new ceres::HuberLoss(Square(4.0))
-        : nullptr;
+
+    //if p_LossFunction_
+    if (!ceres_options_.p_LossFunction_ && ceres_options_.bUse_loss_function_)
+    {
+   ceres_options_.p_LossFunction_ =
+        new ceres::HuberLoss(Square(0.5));
+    }
 
     // For all visibility add reprojections errors:
     for (auto & structure_landmark_it : sfm_data.structure)
@@ -345,7 +349,7 @@ void Bundle_Adjustment_Ceres::setCeresProblem(sfm::SfM_Data& sfm_data, const Opt
           if (!map_intrinsics.at(view->id_intrinsic).empty())
           {
             problem_->AddResidualBlock(cost_function,
-              p_LossFunction,
+              ceres_options_.p_LossFunction_,
               &map_intrinsics.at(view->id_intrinsic)[0],
               &map_poses.at(view->id_pose)[0],
               structure_landmark_it.second.X.data());
@@ -353,7 +357,7 @@ void Bundle_Adjustment_Ceres::setCeresProblem(sfm::SfM_Data& sfm_data, const Opt
           else
           {
             problem_->AddResidualBlock(cost_function,
-              p_LossFunction,
+              ceres_options_.p_LossFunction_,
               &map_poses.at(view->id_pose)[0],
               structure_landmark_it.second.X.data());
           }
