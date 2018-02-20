@@ -231,13 +231,12 @@ void Bundle_Adjustment_Ceres::setCeresProblem(sfm::SfM_Data& sfm_data, const Opt
       }
     }
 
-<<<<<<< HEAD
+
     problem_ = std::make_shared<ceres::Problem>();
-=======
+
   // Data wrapper for refinement:
-  Hash_Map<IndexT, std::vector<double>> map_intrinsics;
-  Hash_Map<IndexT, std::vector<double>> map_poses;
->>>>>>> develop
+  //Hash_Map<IndexT, std::vector<double>> map_intrinsics;
+  //Hash_Map<IndexT, std::vector<double>> map_poses;
 
     // Setup Poses data & subparametrization
     for (const auto & pose_it : sfm_data.poses)

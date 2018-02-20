@@ -38,20 +38,7 @@ bool robustRelativePose
 )
 {
   if (!intrinsics1 || !intrinsics2)
-  return false;
-
-  // Accumulator to find the best solution
-  std::array<uint32_t, 4> f{{0, 0, 0, 0}};
-
-  // Recover plausible rotation and translation from E.
-  std::vector<Mat3> Rs;  // Rotation matrix.
-  std::vector<Vec3> ts;  // Translation matrix.
-  MotionFromEssential(E, &Rs, &ts);
-
-  // Find which solution is the best:
-  // - count how many triangulated observations are in front of the cameras
-  std::vector< std::vector<uint32_t> > vec_newInliers(Rs.size());
-  std::vector< std::vector<Vec3> > vec_3D(Rs.size());
+    return false;
 
   // Compute the bearing vectors
   const Mat3X

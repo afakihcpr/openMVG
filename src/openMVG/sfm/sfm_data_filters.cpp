@@ -150,7 +150,7 @@ std::vector<IndexT> eraseMissingPoses
   {
     if (it.second < min_points_per_pose)
     {
-      removed_elements.push_back(it->first);
+      removed_elements.push_back(it.first);
       sfm_data.poses.erase(it.first);
     }
   }

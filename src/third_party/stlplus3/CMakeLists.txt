@@ -7,9 +7,15 @@ list(APPEND LIBSLTPLUS_SRCS
   ${LIBSLTPLUS_HPP_FILESYSTEM} ${LIBSLTPLUS_CPP_FILESYSTEM})
 
 add_library(stlplus ${LIBSLTPLUS_SRCS})
-target_include_directories(stlplus PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include/stlplus>)
+if(STLPLUS_INCLUDE_INSTALL_DIR)
+  target_include_directories(stlplus PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${STLPLUS_INCLUDE_INSTALL_DIR}>)
+else()
+  target_include_directories(stlplus PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include/stlplus>)
+endif()
 set_property(TARGET stlplus PROPERTY FOLDER OpenMVG/3rdParty)
 
 install(
