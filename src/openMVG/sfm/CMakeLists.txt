@@ -17,22 +17,28 @@ file(GLOB_RECURSE REMOVEFILESUNITTEST *_test.hpp)
 list(REMOVE_ITEM sfm_files_header ${REMOVEFILESUNITTEST})
 
 add_library(openMVG_sfm ${sfm_files_header} ${sfm_files_cpp})
-target_link_libraries(
-  openMVG_sfm
-  PRIVATE
+
+target_link_libraries(openMVG_sfm
+  PUBLIC
     openMVG_geometry
+    openMVG_features
+    openMVG_graph
+    openMVG_matching
     openMVG_multiview
-    stlplus
+)
+
+target_link_libraries(openMVG_sfm
+  PRIVATE
     ${CERES_LIBRARIES}
+    openMVG_graph
     openMVG_lInftyComputerVision
     openMVG_system
-    openMVG_matching
-    lemon
+    stlplus
 )
-target_include_directories(
-  openMVG_sfm
+target_include_directories(openMVG_sfm
   PRIVATE
-  ${CERES_INCLUDE_DIRS})
+    ${CERES_INCLUDE_DIRS}
+)
 set_target_properties(openMVG_sfm PROPERTIES SOVERSION ${OPENMVG_VERSION_MAJOR} VERSION "${OPENMVG_VERSION_MAJOR}.${OPENMVG_VERSION_MINOR}")
 
 install(TARGETS openMVG_sfm DESTINATION lib EXPORT openMVG-targets)
@@ -45,5 +51,6 @@ UNIT_TEST(openMVG sfm_data_utils
 "openMVG_features;openMVG_multiview;openMVG_sfm")
 UNIT_TEST(openMVG sfm_data_filters
   "openMVG_features;openMVG_multiview;openMVG_sfm")
+UNIT_TEST(openMVG sfm_data_graph_utils "openMVG_sfm")
 
 add_subdirectory(pipelines)

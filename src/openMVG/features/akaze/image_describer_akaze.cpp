@@ -8,6 +8,10 @@
 #include <chrono>
 
 
+#include "openMVG/features/akaze/mldb_descriptor.hpp"
+#include "openMVG/features/akaze/msurf_descriptor.hpp"
+#include "openMVG/features/liop/liop_descriptor.hpp"
+
 namespace openMVG {
 namespace features {
 
@@ -18,6 +22,11 @@ AKAZE_Image_describer_SURF::Describe_AKAZE_SURF
   const image::Image<unsigned char>* mask
 )
 {
+  auto regions = std::unique_ptr<Regions_type>(new Regions_type);
+
+  if (image.size() == 0)
+    return regions;
+
   params_.options_.fDesc_factor = GetfDescFactor();
 
   AKAZE akaze(image, params_.options_);
@@ -50,8 +59,6 @@ AKAZE_Image_describer_SURF::Describe_AKAZE_SURF
                             }),
              kpts.end());
 
-  // will be automatically deleted if something goes wrong
-  auto regions = std::unique_ptr<Regions_type>(new Regions_type);
   regions->Features().resize(kpts.size());
   regions->Descriptors().resize(kpts.size());
 
@@ -85,6 +92,11 @@ AKAZE_Image_describer_LIOP::Describe_AKAZE_LIOP
   const image::Image<unsigned char>* mask
 )
 {
+  auto regions = std::unique_ptr<Regions_type>(new Regions_type);
+
+  if (image.size() == 0)
+    return regions;
+
   params_.options_.fDesc_factor = GetfDescFactor();
 
   AKAZE akaze(image, params_.options_);
@@ -119,8 +131,6 @@ AKAZE_Image_describer_LIOP::Describe_AKAZE_LIOP
                             }),
              kpts.end());
 
-  // will be automatically deleted if something goes wrong
-  auto regions = std::unique_ptr<Regions_type>(new Regions_type);
   regions->Features().resize(kpts.size());
   regions->Descriptors().resize(kpts.size());
 
@@ -169,6 +179,11 @@ AKAZE_Image_describer_MLDB::Describe_AKAZE_MLDB
   const image::Image<unsigned char>* mask
 )
 {
+  auto regions = std::unique_ptr<Regions_type>(new Regions_type);
+
+  if (image.size() == 0)
+    return regions;
+
   params_.options_.fDesc_factor = GetfDescFactor();
 
   AKAZE akaze(image, params_.options_);
@@ -188,8 +203,6 @@ AKAZE_Image_describer_MLDB::Describe_AKAZE_MLDB
                             }),
              kpts.end());
 
-  // will be automatically deleted if something goes wrong
-  auto regions = std::unique_ptr<Regions_type>(new Regions_type);
   regions->Features().resize(kpts.size());
   regions->Descriptors().resize(kpts.size());
 
@@ -247,7 +260,7 @@ std::unique_ptr<AKAZE_Image_describer> AKAZE_Image_describer::create
     return std::unique_ptr<AKAZE_Image_describer>
         (new AKAZE_Image_describer_MLDB(params, orientation));
   default:
-    return nullptr;
+    return {};
   }
 }
 

@@ -83,7 +83,7 @@ namespace sfm {
     Image_Localizer_Match_Data * resection_data_ptr
   ) const
   {
-    if (sfm_data_ == nullptr || matching_interface_ == nullptr)
+    if (!sfm_data_ || !matching_interface_)
     {
       return false;
     }
@@ -121,7 +121,7 @@ namespace sfm {
 
     resection_data.pt2D = std::move(pt2D_original); // restore original image domain points
 
-    if (resection_data_ptr != nullptr)
+    if (resection_data_ptr)
       (*resection_data_ptr) = std::move(resection_data);
 
     return bResection;

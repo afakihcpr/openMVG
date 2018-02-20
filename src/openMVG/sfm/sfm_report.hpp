@@ -9,22 +9,14 @@
 #ifndef OPENMVG_SFM_SFM_REPORT_HPP
 #define OPENMVG_SFM_SFM_REPORT_HPP
 
-#include <algorithm>
 #include <string>
-#include <utility>
-#include <vector>
-
-#include "openMVG/sfm/sfm_data.hpp"
-
-#include "third_party/histogram/histogram.hpp"
-#include "third_party/htmlDoc/htmlDoc.hpp"
-#include "third_party/stlplus3/filesystemSimplified/file_system.hpp"
-#include "third_party/vectorGraphics/svgDrawer.hpp"
 
 namespace openMVG {
 namespace sfm {
 
-inline bool Generate_SfM_Report
+struct SfM_Data;
+
+bool Generate_SfM_Report
 (
   const SfM_Data & sfm_data,
   const std::string & htmlFilename
@@ -231,6 +223,7 @@ inline bool Generate_SfM_Report
   htmlFileStream << htmlDocStream.getDoc();
   return !htmlFileStream.good();
 }
+
 
 } // namespace sfm
 } // namespace openMVG
