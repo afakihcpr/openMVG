@@ -107,7 +107,6 @@ void Match
 #endif
   for (int i =0; i < used_index.size(); ++i)
   {
-    std::cout<<"Done "<< i <<" of "<<used_index.size()<<std::endl;
     std::set<IndexT>::const_iterator iter = used_index.begin();
     std::advance(iter, i);
     const IndexT I = *iter;

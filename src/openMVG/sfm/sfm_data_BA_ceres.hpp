@@ -14,6 +14,7 @@
 #include "openMVG/types.hpp"
 #include "openMVG/geometry/Similarity3.hpp"
 #include "ceres/problem.h"
+#include "ceres/solver.h"
 
 namespace ceres { class CostFunction; }
 namespace openMVG { namespace cameras { struct IntrinsicBase; } }
@@ -57,6 +58,7 @@ class Bundle_Adjustment_Ceres : public Bundle_Adjustment
     bool b_usable_prior;
     openMVG::geometry::Similarity3 sim_to_center;
     double pose_center_robust_fitting_error;
+    ceres::Solver::Summary summary_;
 
   public:
   explicit Bundle_Adjustment_Ceres
@@ -72,6 +74,11 @@ class Bundle_Adjustment_Ceres : public Bundle_Adjustment
   std::shared_ptr<ceres::Problem> getCeresProblem()
   {
     return problem_;
+  }
+
+  ceres::Solver::Summary getSummary() const
+  {
+    return summary_;
   }
 
   Hash_Map<IndexT, std::vector<double>>& mapPoses()

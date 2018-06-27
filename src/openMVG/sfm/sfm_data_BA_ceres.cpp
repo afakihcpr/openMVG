@@ -482,13 +482,12 @@ bool Bundle_Adjustment_Ceres::Adjust
   ceres_config_options.parameter_tolerance = ceres_options_.parameter_tolerance_;
 
   // Solve BA
-  ceres::Solver::Summary summary;
-  ceres::Solve(ceres_config_options, problem_.get(), &summary);
+  ceres::Solve(ceres_config_options, problem_.get(), &summary_);
   if (ceres_options_.bCeres_summary_)
-    std::cout << summary.FullReport() << std::endl;
+    std::cout << summary_.FullReport() << std::endl;
 
   // If no error, get back refined parameters
-  if (!summary.IsSolutionUsable())
+  if (!summary_.IsSolutionUsable())
   {
     if (ceres_options_.bVerbose_)
       std::cout << "Bundle Adjustment failed." << std::endl;
@@ -505,10 +504,10 @@ bool Bundle_Adjustment_Ceres::Adjust
         << " #poses: " << sfm_data.poses.size() << "\n"
         << " #intrinsics: " << sfm_data.intrinsics.size() << "\n"
         << " #tracks: " << sfm_data.structure.size() << "\n"
-        << " #residuals: " << summary.num_residuals << "\n"
-        << " Initial RMSE: " << std::sqrt( summary.initial_cost / summary.num_residuals) << "\n"
-        << " Final RMSE: " << std::sqrt( summary.final_cost / summary.num_residuals) << "\n"
-        << " Time (s): " << summary.total_time_in_seconds << "\n"
+        << " #residuals: " << summary_.num_residuals << "\n"
+        << " Initial RMSE: " << std::sqrt( summary_.initial_cost / summary_.num_residuals) << "\n"
+        << " Final RMSE: " << std::sqrt( summary_.final_cost / summary_.num_residuals) << "\n"
+        << " Time (s): " << summary_.total_time_in_seconds << "\n"
         << std::endl;
       if (options.use_motion_priors_opt)
         std::cout << "Usable motion priors: " << (int)b_usable_prior << std::endl;
